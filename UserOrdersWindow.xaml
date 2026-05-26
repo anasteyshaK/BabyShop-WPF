@@ -1,0 +1,801 @@
+<Window x:Class="BabyShop.UserOrdersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Мои заказы"
+        Width="1440"
+        Height="860"
+        MinWidth="1220"
+        MinHeight="760"
+        WindowStartupLocation="CenterOwner"
+        Background="#FFF8F2F5"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        RenderOptions.BitmapScalingMode="HighQuality"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        Loaded="Window_Loaded">
+    <Window.Resources>
+        <!-- Color Palette -->
+        <SolidColorBrush x:Key="OrdersCardBrush"         Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="OrdersLineBrush"         Color="#FFF1DDE5"/>
+        <SolidColorBrush x:Key="OrdersAccentBrush"       Color="#FFEF5F93"/>
+        <SolidColorBrush x:Key="OrdersAccentSoftBrush"   Color="#FFFFF0F5"/>
+        <SolidColorBrush x:Key="OrdersAccentStrongBrush" Color="#FFDF477E"/>
+        <SolidColorBrush x:Key="OrdersTextBrush"         Color="#FF16254B"/>
+        <SolidColorBrush x:Key="OrdersMutedBrush"        Color="#FF8E97AF"/>
+        <SolidColorBrush x:Key="PageBgBrush"             Color="#FFF8F2F5"/>
+
+        <!-- Shadows -->
+        <DropShadowEffect x:Key="OrdersCardShadow"
+                          BlurRadius="32" ShadowDepth="0"
+                          Color="#33E56A97" Opacity="0.18"/>
+        <DropShadowEffect x:Key="SubtleShadow"
+                          BlurRadius="14" ShadowDepth="0"
+                          Color="#22EF5F93" Opacity="0.14"/>
+        <DropShadowEffect x:Key="ButtonShadow"
+                          BlurRadius="10" ShadowDepth="0"
+                          Color="#44EF5F93" Opacity="0.32"/>
+
+        <!-- Shell card -->
+        <Style x:Key="OrdersShellStyle" TargetType="Border">
+            <Setter Property="Background"       Value="{StaticResource OrdersCardBrush}"/>
+            <Setter Property="BorderBrush"      Value="{StaticResource OrdersLineBrush}"/>
+            <Setter Property="BorderThickness"  Value="1"/>
+            <Setter Property="CornerRadius"     Value="26"/>
+            <Setter Property="Effect"           Value="{StaticResource OrdersCardShadow}"/>
+        </Style>
+
+        <!-- Ghost button -->
+        <Style x:Key="GhostActionButtonStyle" TargetType="Button">
+            <Setter Property="Height"          Value="40"/>
+            <Setter Property="Padding"         Value="16,0"/>
+            <Setter Property="Background"      Value="White"/>
+            <Setter Property="BorderBrush"     Value="{StaticResource OrdersLineBrush}"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="Foreground"      Value="{StaticResource OrdersTextBrush}"/>
+            <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="FontFamily"      Value="{StaticResource RoundedAppFont}"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Effect"          Value="{StaticResource SubtleShadow}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background"    Value="{StaticResource OrdersAccentSoftBrush}"/>
+                                <Setter TargetName="Root" Property="BorderBrush"   Value="{StaticResource OrdersAccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.97" ScaleY="0.97"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Primary (pink) button -->
+        <Style x:Key="PrimaryActionButtonStyle" TargetType="Button" BasedOn="{StaticResource GhostActionButtonStyle}">
+            <Setter Property="Background"      Value="{StaticResource OrdersAccentBrush}"/>
+            <Setter Property="BorderBrush"     Value="{StaticResource OrdersAccentBrush}"/>
+            <Setter Property="Foreground"      Value="White"/>
+            <Setter Property="Effect"          Value="{StaticResource ButtonShadow}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{StaticResource OrdersAccentStrongBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.97" ScaleY="0.97"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Pagination button base -->
+        <Style x:Key="PaginationButtonStyle" TargetType="Button">
+            <Setter Property="Width"           Value="34"/>
+            <Setter Property="Height"          Value="34"/>
+            <Setter Property="Background"      Value="White"/>
+            <Setter Property="BorderBrush"     Value="{StaticResource OrdersLineBrush}"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="Foreground"      Value="{StaticResource OrdersTextBrush}"/>
+            <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background"  Value="{StaticResource OrdersAccentSoftBrush}"/>
+                                <Setter TargetName="Root" Property="BorderBrush" Value="{StaticResource OrdersAccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{StaticResource OrdersAccentBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Order list item -->
+        <Style x:Key="OrderCardListItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Padding"                   Value="0"/>
+            <Setter Property="Margin"                    Value="0,0,0,10"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Root"
+                                Background="White"
+                                BorderBrush="{StaticResource OrdersLineBrush}"
+                                BorderThickness="1.5"
+                                CornerRadius="18"
+                                Padding="16,13">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background"    Value="#FFFFFBFD"/>
+                                <Setter TargetName="Root" Property="BorderBrush"   Value="#FFFFD6E7"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Root" Property="BorderBrush"   Value="{StaticResource OrdersAccentBrush}"/>
+                                <Setter TargetName="Root" Property="Background"    Value="#FFFFFCFD"/>
+                                <Setter TargetName="Root" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ScrollViewer without scrollbar chrome -->
+        <Style x:Key="CleanScrollViewer" TargetType="ScrollViewer">
+            <Setter Property="VerticalScrollBarVisibility"   Value="Auto"/>
+            <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+        </Style>
+    </Window.Resources>
+
+    <!-- ═══════════════════════════════════════════════════════
+         ROOT
+    ════════════════════════════════════════════════════════ -->
+    <Grid Margin="18">
+        <Border Style="{StaticResource OrdersShellStyle}">
+            <Grid Margin="26">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="440"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ═══════════════════════════════════════════
+                     LEFT PANEL — Orders list
+                ════════════════════════════════════════════ -->
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,18">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- Pink accent icon -->
+                            <Border Width="48" Height="48" CornerRadius="16"
+                                    Background="{StaticResource OrdersAccentSoftBrush}">
+                                <!-- Shopping bag SVG-like path using Path geometry -->
+                                <Viewbox Width="26" Height="26">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Fill="{StaticResource OrdersAccentBrush}"
+                                              Data="M6 2 L6 4 L4.5 4 C3.67 4 3 4.67 3 5.5 L3 20 C3 20.83 3.67 21.5 4.5 21.5 L19.5 21.5 C20.33 21.5 21 20.83 21 20 L21 5.5 C21 4.67 20.33 4 19.5 4 L18 4 L18 2 Z M8 4 L16 4 L16 2 L8 2 Z M8 2 C8 0.9 8.9 0 10 0 L14 0 C15.1 0 16 0.9 16 2 Z"/>
+                                        <Path Stroke="{StaticResource OrdersAccentBrush}" StrokeThickness="1.8"
+                                              Fill="Transparent"
+                                              Data="M6 2 C6 0.9 6.9 0 8 0 L16 0 C17.1 0 18 0.9 18 2 L18 4 L6 4 Z"/>
+                                        <Rectangle Canvas.Left="3" Canvas.Top="4" Width="18" Height="17.5"
+                                                   RadiusX="1.5" RadiusY="1.5"
+                                                   Fill="{StaticResource OrdersAccentSoftBrush}"
+                                                   Stroke="{StaticResource OrdersAccentBrush}" StrokeThickness="1.8"/>
+                                        <Path Stroke="{StaticResource OrdersAccentBrush}" StrokeThickness="1.8"
+                                              StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                              Fill="Transparent"
+                                              Data="M8 2 L8 6 M16 2 L16 6"/>
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                                <TextBlock x:Name="OrdersTitleTextBlock"
+                                           FontSize="28" FontWeight="Black"
+                                           Foreground="{StaticResource OrdersTextBrush}"
+                                           Text="Мои заказы"/>
+                                <TextBlock x:Name="OrdersSubtitleTextBlock"
+                                           FontSize="13.5"
+                                           Foreground="{StaticResource OrdersMutedBrush}"
+                                           Text="История ваших заказов и квитанции"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Orders card container -->
+                    <Border Grid.Row="1"
+                            Padding="14"
+                            Background="#FFFFFEFF"
+                            BorderBrush="{StaticResource OrdersLineBrush}"
+                            BorderThickness="1.5"
+                            CornerRadius="22"
+                            Effect="{StaticResource SubtleShadow}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Column headers -->
+                            <Border Grid.Row="0"
+                                    Margin="2,0,2,12"
+                                    Padding="14,10"
+                                    Background="{StaticResource OrdersAccentSoftBrush}"
+                                    CornerRadius="12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="88"/>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="95"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock FontSize="11.5" FontWeight="Bold"
+                                               Foreground="{StaticResource OrdersAccentBrush}"
+                                               Text="№ заказа"/>
+                                    <TextBlock Grid.Column="1" FontSize="11.5" FontWeight="Bold"
+                                               Foreground="{StaticResource OrdersAccentBrush}"
+                                               Text="Дата"/>
+                                    <TextBlock Grid.Column="2" FontSize="11.5" FontWeight="Bold"
+                                               Foreground="{StaticResource OrdersAccentBrush}"
+                                               Text="Статус"/>
+                                    <TextBlock Grid.Column="3" FontSize="11.5" FontWeight="Bold"
+                                               Foreground="{StaticResource OrdersAccentBrush}"
+                                               Text="Сумма"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- List -->
+                            <Grid Grid.Row="1">
+                                <ListBox x:Name="OrdersListBox"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         SelectionChanged="OrdersListBox_SelectionChanged"
+                                         ItemContainerStyle="{StaticResource OrderCardListItemStyle}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+
+                                <!-- Empty state -->
+                                <Border x:Name="OrdersEmptyStateBorder"
+                                        Visibility="Collapsed"
+                                        Background="#FFFFFCFD"
+                                        BorderBrush="{StaticResource OrdersLineBrush}"
+                                        BorderThickness="1.5"
+                                        CornerRadius="16"
+                                        Padding="22">
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Border Width="56" Height="56" CornerRadius="18"
+                                                Background="{StaticResource OrdersAccentSoftBrush}"
+                                                HorizontalAlignment="Center" Margin="0,0,0,14">
+                                            <TextBlock FontSize="26" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                       Foreground="{StaticResource OrdersAccentBrush}" Text="🛍"/>
+                                        </Border>
+                                        <TextBlock x:Name="OrdersEmptyTitleTextBlock"
+                                                   FontSize="18" FontWeight="Black"
+                                                   Foreground="{StaticResource OrdersTextBrush}"
+                                                   HorizontalAlignment="Center"
+                                                   Text="Заказы не найдены"/>
+                                        <TextBlock x:Name="OrdersEmptySubtitleTextBlock"
+                                                   Margin="0,8,0,0"
+                                                   FontSize="12.5"
+                                                   Foreground="{StaticResource OrdersMutedBrush}"
+                                                   TextWrapping="Wrap"
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   Width="260"
+                                                   Text="После оформления заказа здесь появится история ваших покупок."/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
+                            <!-- Footer: count + pagination -->
+                            <DockPanel Grid.Row="2" Margin="4,14,4,2" VerticalAlignment="Center">
+                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Border Width="7" Height="7" CornerRadius="4"
+                                            Background="{StaticResource OrdersAccentBrush}"
+                                            Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="OrdersCountTextBlock"
+                                               VerticalAlignment="Center"
+                                               FontSize="12.5" FontWeight="SemiBold"
+                                               Foreground="{StaticResource OrdersMutedBrush}"
+                                               Text="Всего заказов: 0"/>
+                                </StackPanel>
+                                <StackPanel x:Name="PaginationPanel"
+                                            DockPanel.Dock="Right"
+                                            Orientation="Horizontal"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- ═══════════════════════════════════════════
+                     RIGHT PANEL — Receipt
+                ════════════════════════════════════════════ -->
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Receipt header bar -->
+                    <Border Grid.Row="0"
+                            Background="White"
+                            BorderBrush="{StaticResource OrdersLineBrush}"
+                            BorderThickness="1.5"
+                            CornerRadius="20"
+                            Effect="{StaticResource SubtleShadow}">
+                        <Grid Margin="20,14,20,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Title area -->
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <!-- Receipt icon -->
+                                <Border Width="44" Height="44" CornerRadius="14"
+                                        Background="{StaticResource OrdersAccentSoftBrush}">
+                                    <Viewbox Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Canvas Width="24" Height="24">
+                                            <Rectangle Canvas.Left="3" Canvas.Top="1"
+                                                       Width="18" Height="22" RadiusX="3" RadiusY="3"
+                                                       Fill="{StaticResource OrdersAccentSoftBrush}"
+                                                       Stroke="{StaticResource OrdersAccentBrush}"
+                                                       StrokeThickness="1.8"/>
+                                            <Line X1="7" Y1="7" X2="17" Y2="7"
+                                                  Stroke="{StaticResource OrdersAccentBrush}" StrokeThickness="1.6"
+                                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                            <Line X1="7" Y1="11" X2="17" Y2="11"
+                                                  Stroke="{StaticResource OrdersAccentBrush}" StrokeThickness="1.6"
+                                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                            <Line X1="7" Y1="15" X2="13" Y2="15"
+                                                  Stroke="{StaticResource OrdersAccentBrush}" StrokeThickness="1.6"
+                                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                        </Canvas>
+                                    </Viewbox>
+                                </Border>
+                                <TextBlock x:Name="ReceiptTitleTextBlock"
+                                           Margin="12,0,0,0"
+                                           FontSize="22" FontWeight="Black"
+                                           Foreground="{StaticResource OrdersTextBrush}"
+                                           VerticalAlignment="Center"
+                                           Text="Квитанция"/>
+                            </StackPanel>
+
+                            <!-- Action buttons -->
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+
+                                <!-- Open details -->
+                                <Button x:Name="OpenDetailsButton"
+                                        Margin="0,0,8,0"
+                                        Style="{StaticResource GhostActionButtonStyle}"
+                                        Click="OpenDetailsButton_Click">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Viewbox Width="16" Height="16" Margin="0,0,7,0">
+                                            <Canvas Width="24" Height="24">
+                                                <Rectangle Canvas.Left="3" Canvas.Top="3" Width="18" Height="18"
+                                                           RadiusX="3" RadiusY="3" Fill="Transparent"
+                                                           Stroke="#FF16254B" StrokeThickness="2"/>
+                                                <Line X1="9" Y1="3" X2="9" Y2="21"
+                                                      Stroke="#FF16254B" StrokeThickness="2"/>
+                                                <Line X1="3" Y1="9" X2="21" Y2="9"
+                                                      Stroke="#FF16254B" StrokeThickness="2"/>
+                                            </Canvas>
+                                        </Viewbox>
+                                        <TextBlock Text="Открыть детали" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- Download -->
+                                <Button x:Name="DownloadButton"
+                                        Margin="0,0,8,0"
+                                        Style="{StaticResource GhostActionButtonStyle}"
+                                        Click="DownloadButton_Click">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Viewbox Width="16" Height="16" Margin="0,0,7,0">
+                                            <Canvas Width="24" Height="24">
+                                                <Line X1="12" Y1="3" X2="12" Y2="15"
+                                                      Stroke="#FF16254B" StrokeThickness="2"
+                                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                <Path Fill="Transparent"
+                                                      Stroke="#FF16254B" StrokeThickness="2"
+                                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                                      StrokeLineJoin="Round"
+                                                      Data="M7 10 L12 15 L17 10"/>
+                                                <Line X1="4" Y1="20" X2="20" Y2="20"
+                                                      Stroke="#FF16254B" StrokeThickness="2"
+                                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                            </Canvas>
+                                        </Viewbox>
+                                        <TextBlock Text="Скачать" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- Print (pink) -->
+                                <Button x:Name="PrintButton"
+                                        Style="{StaticResource PrimaryActionButtonStyle}"
+                                        Click="PrintButton_Click">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Viewbox Width="16" Height="16" Margin="0,0,7,0">
+                                            <Canvas Width="24" Height="24">
+                                                <Rectangle Canvas.Left="5" Canvas.Top="7"
+                                                           Width="14" Height="10" RadiusX="2" RadiusY="2"
+                                                           Fill="Transparent" Stroke="White" StrokeThickness="2"/>
+                                                <Path Fill="Transparent" Stroke="White" StrokeThickness="2"
+                                                      StrokeLineJoin="Round"
+                                                      Data="M7 7 L7 3 L17 3 L17 7"/>
+                                                <Rectangle Canvas.Left="7" Canvas.Top="13"
+                                                           Width="10" Height="7" RadiusX="1.5" RadiusY="1.5"
+                                                           Fill="Transparent" Stroke="White" StrokeThickness="2"/>
+                                                <Ellipse Canvas.Left="15" Canvas.Top="10" Width="3" Height="3"
+                                                         Fill="White"/>
+                                            </Canvas>
+                                        </Viewbox>
+                                        <TextBlock Text="Печать" VerticalAlignment="Center" Foreground="White"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Receipt content area (unchanged from original) -->
+                    <Grid Grid.Row="1" Margin="0,16,0,0">
+                        <Border Style="{StaticResource OrdersShellStyle}">
+                            <Grid>
+                                <ScrollViewer x:Name="ReceiptPreviewScrollViewer"
+                                              Visibility="Collapsed"
+                                              VerticalScrollBarVisibility="Auto"
+                                              HorizontalScrollBarVisibility="Disabled">
+                                    <StackPanel Margin="20,18,20,24">
+                                        <Border Background="White"
+                                                BorderBrush="{StaticResource OrdersLineBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="26"
+                                                Padding="22">
+                                            <StackPanel>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Image Width="188" Height="92"
+                                                           Stretch="Uniform"
+                                                           Source="/Assets/babyshop-logo.png"
+                                                           RenderOptions.BitmapScalingMode="HighQuality"
+                                                           SnapsToDevicePixels="True"/>
+                                                    <TextBlock Grid.Column="1"
+                                                               Margin="18,2,0,0"
+                                                               VerticalAlignment="Center"
+                                                               FontSize="14"
+                                                               Foreground="{StaticResource OrdersMutedBrush}"
+                                                               Text="Всё для самых важных"/>
+                                                </Grid>
+
+                                                <StackPanel Margin="0,24,0,0" HorizontalAlignment="Center">
+                                                    <TextBlock x:Name="ReceiptHeroTitleTextBlock"
+                                                               HorizontalAlignment="Center"
+                                                               FontSize="32" FontWeight="Black"
+                                                               Foreground="{StaticResource OrdersTextBrush}"
+                                                               Text="Квитанция заказа"/>
+                                                    <TextBlock x:Name="ReceiptHeroSubtitleTextBlock"
+                                                               Margin="0,8,0,0"
+                                                               HorizontalAlignment="Center"
+                                                               FontSize="14"
+                                                               Foreground="{StaticResource OrdersMutedBrush}"
+                                                               Text="Детали и состав заказа"/>
+                                                    <Border Margin="0,14,0,0"
+                                                            Padding="22,10"
+                                                            HorizontalAlignment="Center"
+                                                            Background="{StaticResource OrdersAccentBrush}"
+                                                            CornerRadius="16"
+                                                            MinWidth="172">
+                                                        <TextBlock x:Name="ReceiptRibbonTextBlock"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"
+                                                                   FontSize="22" FontWeight="Black"
+                                                                   Foreground="White"
+                                                                   Text="№ 0"/>
+                                                    </Border>
+                                                </StackPanel>
+
+                                                <Border Margin="0,22,0,0"
+                                                        Background="#FFFFFEFF"
+                                                        BorderBrush="{StaticResource OrdersLineBrush}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="24">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="0.76*"/>
+                                                            <ColumnDefinition Width="1.08*"/>
+                                                            <ColumnDefinition Width="1.14*"/>
+                                                            <ColumnDefinition Width="0.82*"/>
+                                                            <ColumnDefinition Width="0.82*"/>
+                                                            <ColumnDefinition Width="1.10*"/>
+                                                            <ColumnDefinition Width="1.18*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel Margin="16,14,14,14">
+                                                            <TextBlock FontSize="11" Foreground="{StaticResource OrdersMutedBrush}" Text="№ заказа"/>
+                                                            <TextBlock x:Name="ReceiptOrderNumberValueTextBlock" Margin="0,8,0,0" FontSize="18" FontWeight="Black" Foreground="{StaticResource OrdersTextBrush}" Text="0"/>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="1" Margin="16,14,14,14">
+                                                            <TextBlock FontSize="11" Foreground="{StaticResource OrdersMutedBrush}" Text="Клиент"/>
+                                                            <TextBlock x:Name="ReceiptClientValueTextBlock" Margin="0,8,0,0" FontSize="17" FontWeight="Black" Foreground="{StaticResource OrdersTextBrush}" TextWrapping="Wrap" Text="—"/>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="2" Margin="16,14,14,14">
+                                                            <TextBlock FontSize="11" Foreground="{StaticResource OrdersMutedBrush}" Text="Адрес доставки"/>
+                                                            <TextBlock x:Name="ReceiptAddressValueTextBlock" Margin="0,8,0,0" FontSize="16" FontWeight="Black" Foreground="{StaticResource OrdersTextBrush}" TextWrapping="Wrap" Text="—"/>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="3" Margin="16,14,14,14">
+                                                            <TextBlock FontSize="11" Foreground="{StaticResource OrdersMutedBrush}" Text="Дата начала"/>
+                                                            <TextBlock x:Name="ReceiptStartDateValueTextBlock" Margin="0,8,0,0" FontSize="16" FontWeight="Black" Foreground="{StaticResource OrdersTextBrush}" TextWrapping="Wrap" Text="—"/>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="4" Margin="16,14,14,14">
+                                                            <TextBlock FontSize="11" Foreground="{StaticResource OrdersMutedBrush}" Text="Дата окончания"/>
+                                                            <TextBlock x:Name="ReceiptEndDateValueTextBlock" Margin="0,8,0,0" FontSize="16" FontWeight="Black" Foreground="{StaticResource OrdersTextBrush}" TextWrapping="Wrap" Text="—"/>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="5" Margin="16,14,14,14">
+                                                            <TextBlock FontSize="11" Foreground="{StaticResource OrdersMutedBrush}" Text="Статус заказа"/>
+                                                            <Border x:Name="ReceiptStatusBorder"
+                                                                    Margin="0,10,0,0" Padding="10,5"
+                                                                    HorizontalAlignment="Left"
+                                                                    Background="#FFFFF2D8"
+                                                                    CornerRadius="999">
+                                                                <TextBlock x:Name="ReceiptStatusTextBlock"
+                                                                           FontSize="11" FontWeight="Bold"
+                                                                           Foreground="#FFB37A14"
+                                                                           Text="Ожидает"/>
+                                                            </Border>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="6" Margin="16,14,14,14">
+                                                            <TextBlock FontSize="11" Foreground="{StaticResource OrdersMutedBrush}" Text="Сумма заказа"/>
+                                                            <TextBlock x:Name="ReceiptTotalValueTextBlock" Margin="0,8,0,0" FontSize="15.5" FontWeight="Black" Foreground="{StaticResource OrdersTextBrush}" Text="0,00"/>
+                                                            <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource OrdersMutedBrush}" Text="MDL"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
+
+                                                <Border Margin="0,18,0,0"
+                                                        Background="White"
+                                                        BorderBrush="{StaticResource OrdersLineBrush}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="24">
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="*"/>
+                                                        </Grid.RowDefinitions>
+                                                        <Grid Margin="16,14,16,14">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="1.7*"/>
+                                                                <ColumnDefinition Width="0.55*"/>
+                                                                <ColumnDefinition Width="0.65*"/>
+                                                                <ColumnDefinition Width="0.65*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock FontSize="13" FontWeight="Bold" Foreground="{StaticResource OrdersMutedBrush}" Text="Товар"/>
+                                                            <TextBlock Grid.Column="1" HorizontalAlignment="Center" FontSize="13" FontWeight="Bold" Foreground="{StaticResource OrdersMutedBrush}" Text="Количество"/>
+                                                            <TextBlock Grid.Column="2" HorizontalAlignment="Center" FontSize="13" FontWeight="Bold" Foreground="{StaticResource OrdersMutedBrush}" Text="Цена за ед."/>
+                                                            <TextBlock Grid.Column="3" HorizontalAlignment="Center" FontSize="13" FontWeight="Bold" Foreground="{StaticResource OrdersMutedBrush}" Text="Итого"/>
+                                                        </Grid>
+                                                        <ItemsControl x:Name="ReceiptItemsControl" Grid.Row="1" Margin="0,0,0,6">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Border BorderBrush="{StaticResource OrdersLineBrush}" BorderThickness="0,1,0,0" Padding="16,14">
+                                                                        <Grid>
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="1.7*"/>
+                                                                                <ColumnDefinition Width="0.55*"/>
+                                                                                <ColumnDefinition Width="0.65*"/>
+                                                                                <ColumnDefinition Width="0.65*"/>
+                                                                            </Grid.ColumnDefinitions>
+                                                                            <StackPanel Orientation="Horizontal">
+                                                                                <Border Width="176" Height="104" CornerRadius="18" BorderBrush="{StaticResource OrdersLineBrush}" BorderThickness="1" Background="#FFFFF9FB">
+                                                                                    <Image Stretch="UniformToFill"
+                                                                                           Source="{Binding ResolvedImagePath}"
+                                                                                           RenderOptions.BitmapScalingMode="HighQuality"
+                                                                                           SnapsToDevicePixels="True"/>
+                                                                                </Border>
+                                                                                <StackPanel Margin="14,0,0,0" Width="300">
+                                                                                    <TextBlock FontSize="18" FontWeight="Black" Foreground="{StaticResource OrdersTextBrush}" Text="{Binding ProductTitle}"/>
+                                                                                    <TextBlock Margin="0,6,0,0" FontSize="12.5" Foreground="#FF56607C" Text="{Binding Subtitle}"/>
+                                                                                    <TextBlock Margin="0,2,0,0" FontSize="12.5" Foreground="#FF56607C" Text="{Binding ColorLine}"/>
+                                                                                    <Border Margin="0,10,0,0" Padding="10,5" HorizontalAlignment="Left" Background="{StaticResource OrdersAccentSoftBrush}" CornerRadius="999">
+                                                                                        <TextBlock FontSize="11" FontWeight="Bold" Foreground="{StaticResource OrdersAccentBrush}" Text="{Binding Tag}"/>
+                                                                                    </Border>
+                                                                                </StackPanel>
+                                                                            </StackPanel>
+                                                                            <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                                <Border Padding="18,10" Background="#FFFFF7FA" BorderBrush="{StaticResource OrdersLineBrush}" BorderThickness="1" CornerRadius="14">
+                                                                                    <TextBlock HorizontalAlignment="Center" FontSize="18" FontWeight="Black" Foreground="{StaticResource OrdersTextBrush}" Text="{Binding Quantity}"/>
+                                                                                </Border>
+                                                                                <TextBlock Margin="0,8,0,0" HorizontalAlignment="Center" FontSize="12" Foreground="{StaticResource OrdersMutedBrush}" Text="шт."/>
+                                                                            </StackPanel>
+                                                                            <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                                <TextBlock HorizontalAlignment="Center" FontSize="18" FontWeight="Black" Foreground="{StaticResource OrdersTextBrush}" Text="{Binding UnitPriceText}"/>
+                                                                                <TextBlock Margin="0,6,0,0" HorizontalAlignment="Center" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource OrdersMutedBrush}" Text="MDL"/>
+                                                                            </StackPanel>
+                                                                            <StackPanel Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                                <TextBlock HorizontalAlignment="Center" FontSize="18" FontWeight="Black" Foreground="{StaticResource OrdersAccentBrush}" Text="{Binding LineTotalText}"/>
+                                                                                <TextBlock Margin="0,6,0,0" HorizontalAlignment="Center" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource OrdersMutedBrush}" Text="MDL"/>
+                                                                            </StackPanel>
+                                                                        </Grid>
+                                                                    </Border>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </Grid>
+                                                </Border>
+
+                                                <Border Margin="0,18,0,0"
+                                                        Background="White"
+                                                        BorderBrush="{StaticResource OrdersLineBrush}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="24">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="1*"/>
+                                                            <ColumnDefinition Width="1*"/>
+                                                            <ColumnDefinition Width="1.15*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel Margin="18,16" Orientation="Horizontal">
+                                                            <Border Width="56" Height="56" CornerRadius="16" Background="#FFFFF7FA" BorderBrush="{StaticResource OrdersLineBrush}" BorderThickness="1">
+                                                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Foreground="{StaticResource OrdersAccentBrush}" Text="◫"/>
+                                                            </Border>
+                                                            <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                                                                <TextBlock FontSize="12.5" Foreground="{StaticResource OrdersMutedBrush}" Text="Всего позиций"/>
+                                                                <TextBlock x:Name="ReceiptPositionsValueTextBlock" Margin="0,4,0,0" FontSize="18" FontWeight="Black" Foreground="{StaticResource OrdersTextBrush}" Text="0"/>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="1" Margin="18,16" Orientation="Horizontal">
+                                                            <Border Width="56" Height="56" CornerRadius="16" Background="#FFFFF7FA" BorderBrush="{StaticResource OrdersLineBrush}" BorderThickness="1">
+                                                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Foreground="{StaticResource OrdersAccentBrush}" Text="◧"/>
+                                                            </Border>
+                                                            <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                                                                <TextBlock FontSize="12.5" Foreground="{StaticResource OrdersMutedBrush}" Text="Общее количество"/>
+                                                                <TextBlock x:Name="ReceiptQuantityValueTextBlock" Margin="0,4,0,0" FontSize="18" FontWeight="Black" Foreground="{StaticResource OrdersTextBrush}" Text="0"/>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="2" Margin="18,16" Orientation="Horizontal">
+                                                            <Border Width="56" Height="56" CornerRadius="16" Background="#FFFFF7FA" BorderBrush="{StaticResource OrdersLineBrush}" BorderThickness="1">
+                                                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Foreground="{StaticResource OrdersAccentBrush}" Text="◍"/>
+                                                            </Border>
+                                                            <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                                                                <TextBlock FontSize="12.5" Foreground="{StaticResource OrdersMutedBrush}" Text="Итоговая сумма заказа"/>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <TextBlock x:Name="ReceiptSummaryTotalValueTextBlock" Margin="0,4,0,0" FontSize="22" FontWeight="Black" Foreground="{StaticResource OrdersAccentBrush}" Text="0,00"/>
+                                                                    <TextBlock Margin="8,10,0,0" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource OrdersMutedBrush}" Text="MDL"/>
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
+
+                                                <StackPanel Margin="0,22,0,0" HorizontalAlignment="Center">
+                                                    <TextBlock FontSize="28" FontWeight="Black" Foreground="{StaticResource OrdersAccentBrush}" Text="Спасибо за покупку!"/>
+                                                    <TextBlock Margin="0,8,0,0" HorizontalAlignment="Center" FontSize="13" Foreground="{StaticResource OrdersMutedBrush}" Text="Мы ценим ваше доверие и заботимся о самых важных моментах."/>
+                                                    <TextBlock x:Name="ReceiptGeneratedTextBlock" Margin="0,12,0,0" HorizontalAlignment="Center" FontSize="12.5" Foreground="{StaticResource OrdersMutedBrush}" Text="Сформировано: —"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </ScrollViewer>
+
+                                <!-- Receipt empty state -->
+                                <Border x:Name="ReceiptEmptyStateBorder"
+                                        Background="#FFFFFEFF"
+                                        CornerRadius="26"
+                                        Padding="26">
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <!-- Decorative icon -->
+                                        <Border Width="72" Height="72" CornerRadius="24"
+                                                Background="{StaticResource OrdersAccentSoftBrush}"
+                                                HorizontalAlignment="Center" Margin="0,0,0,18">
+                                            <Viewbox Width="36" Height="36" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <Canvas Width="24" Height="24">
+                                                    <Rectangle Canvas.Left="3" Canvas.Top="1"
+                                                               Width="18" Height="22" RadiusX="3" RadiusY="3"
+                                                               Fill="{StaticResource OrdersAccentSoftBrush}"
+                                                               Stroke="{StaticResource OrdersAccentBrush}"
+                                                               StrokeThickness="1.8"/>
+                                                    <Line X1="7" Y1="7"  X2="17" Y2="7"
+                                                          Stroke="{StaticResource OrdersAccentBrush}" StrokeThickness="1.6"
+                                                          StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                    <Line X1="7" Y1="11" X2="17" Y2="11"
+                                                          Stroke="{StaticResource OrdersAccentBrush}" StrokeThickness="1.6"
+                                                          StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                    <Line X1="7" Y1="15" X2="13" Y2="15"
+                                                          Stroke="{StaticResource OrdersAccentBrush}" StrokeThickness="1.6"
+                                                          StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                                </Canvas>
+                                            </Viewbox>
+                                        </Border>
+                                        <TextBlock x:Name="ReceiptEmptyTitleTextBlock"
+                                                   FontSize="22" FontWeight="Black"
+                                                   Foreground="{StaticResource OrdersTextBrush}"
+                                                   HorizontalAlignment="Center"
+                                                   Text="Выберите заказ"/>
+                                        <TextBlock x:Name="ReceiptEmptySubtitleTextBlock"
+                                                   Margin="0,10,0,0"
+                                                   FontSize="13"
+                                                   Foreground="{StaticResource OrdersMutedBrush}"
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   Width="320"
+                                                   Text="После выбора заказа справа отобразится квитанция, доступная для просмотра, скачивания и печати."/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

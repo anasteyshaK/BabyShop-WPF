@@ -1,0 +1,174 @@
+﻿<Window x:Class="BabyShop.CheckoutForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Оформление заказа"
+        Width="620"
+        Height="620"
+        MinWidth="580"
+        MinHeight="560"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Loaded="Window_Loaded">
+    <Window.Resources>
+        <Style x:Key="CheckoutFieldTextBoxStyle" TargetType="TextBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LineBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CaretBrush" Value="{StaticResource AccentDeepBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Root"
+                                Height="50"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="14,0"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Root" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CheckoutComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LineBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="MinHeight" Value="50"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="24">
+        <Border Style="{StaticResource HeroCardStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel>
+                    <TextBlock FontSize="28"
+                               FontWeight="Black"
+                               Text="Оформление заказа"/>
+                    <TextBlock Margin="0,8,0,0"
+                               Foreground="{StaticResource MutedTextBrush}"
+                               TextWrapping="Wrap"
+                               Text="Введите данные клиента так же, как в админке: имя и фамилию отдельно, телефон по шаблону +373 и адрес с выбором из списка или ручным вводом."/>
+                </StackPanel>
+
+                <ScrollViewer Grid.Row="1"
+                              Margin="0,24,0,0"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Text="Имя"/>
+                                <TextBox x:Name="FirstNameTextBox"
+                                         Margin="0,8,0,0"
+                                         MaxLength="40"
+                                         Style="{StaticResource CheckoutFieldTextBoxStyle}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Text="Фамилия"/>
+                                <TextBox x:Name="LastNameTextBox"
+                                         Margin="0,8,0,0"
+                                         MaxLength="40"
+                                         Style="{StaticResource CheckoutFieldTextBoxStyle}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Margin="0,18,0,0"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Text="Телефон"/>
+                        <TextBox x:Name="PhoneTextBox"
+                                 Margin="0,8,0,0"
+                                 Style="{StaticResource CheckoutFieldTextBoxStyle}"/>
+                        <TextBlock Margin="0,6,0,0"
+                                   FontSize="12"
+                                   Foreground="{StaticResource MutedTextBrush}"
+                                   Text="После +373 должно быть ровно 8 цифр."/>
+
+                        <TextBlock Margin="0,18,0,0"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Text="Адрес доставки"/>
+                        <ComboBox x:Name="AddressComboBox"
+                                  Margin="0,8,0,0"
+                                  IsEditable="True"
+                                  IsTextSearchEnabled="True"
+                                  StaysOpenOnEdit="True"
+                                  DisplayMemberPath="Label"
+                                  SelectedValuePath="Value"
+                                  Style="{StaticResource CheckoutComboBoxStyle}"/>
+                        <TextBlock Margin="0,6,0,0"
+                                   FontSize="12"
+                                   Foreground="{StaticResource MutedTextBrush}"
+                                   TextWrapping="Wrap"
+                                   Text="Можно выбрать готовый адрес из базы или ввести новый. В адресе должны быть и буквы, и цифры."/>
+
+                        <TextBlock x:Name="ValidationTextBlock"
+                                   Margin="0,20,0,0"
+                                   FontSize="13"
+                                   Foreground="{StaticResource AccentDeepBrush}"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Grid Grid.Row="2" Margin="0,20,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock VerticalAlignment="Center"
+                               Foreground="{StaticResource MutedTextBrush}"
+                               Text="Пустые поля недопустимы. После проверки данные будут сохранены в заказ."/>
+
+                    <Button Grid.Column="1"
+                            Width="120"
+                            Margin="0,0,12,0"
+                            IsCancel="True"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Click="CancelButton_Click"
+                            Content="Отмена"/>
+
+                    <Button x:Name="SubmitButton"
+                            Grid.Column="2"
+                            Width="160"
+                            IsDefault="True"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Click="SubmitButton_Click"
+                            Content="Подтвердить"/>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

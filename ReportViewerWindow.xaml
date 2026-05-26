@@ -1,0 +1,98 @@
+<Window x:Class="BabyShop.ReportViewerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Report Viewer"
+        Width="1160"
+        Height="820"
+        MinWidth="980"
+        MinHeight="700"
+        WindowStartupLocation="CenterOwner"
+        Loaded="Window_Loaded">
+    <Grid Background="{StaticResource AppBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Margin="28,24,28,0"
+                Style="{StaticResource HeroCardStyle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <Border Background="{StaticResource AccentSoftBrush}"
+                            BorderBrush="{StaticResource LineBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="10,5"
+                            HorizontalAlignment="Left">
+                        <TextBlock x:Name="ViewerTagTextBlock"
+                                   FontSize="11"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource AccentDeepBrush}"/>
+                    </Border>
+
+                    <TextBlock x:Name="ViewerTitleTextBlock"
+                               Margin="0,16,0,0"
+                               FontSize="30"
+                               FontWeight="Black"
+                               Foreground="{StaticResource TextBrush}"/>
+
+                    <TextBlock x:Name="ViewerSubtitleTextBlock"
+                               Margin="0,10,0,0"
+                               Width="540"
+                               TextWrapping="Wrap"
+                               FontSize="14"
+                               Foreground="{StaticResource MutedTextBrush}"/>
+                </StackPanel>
+
+                <WrapPanel Grid.Column="1"
+                           Margin="24,0,0,0"
+                           VerticalAlignment="Top">
+                    <Button x:Name="PrintButton"
+                            Margin="0,0,10,10"
+                            MinWidth="124"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Content="Print"
+                            Click="PrintButton_Click"/>
+                    <Button x:Name="ExportPdfButton"
+                            Margin="0,0,10,10"
+                            MinWidth="136"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Content="Export PDF"
+                            Click="ExportPdfButton_Click"/>
+                    <Button x:Name="OpenBrowserButton"
+                            Margin="0,0,10,10"
+                            MinWidth="150"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Content="Open in browser"
+                            Click="OpenBrowserButton_Click"/>
+                    <Button x:Name="CloseButton"
+                            Margin="0,0,0,10"
+                            MinWidth="112"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Content="Close"
+                            Click="CloseButton_Click"/>
+                </WrapPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Margin="28,18,28,0"
+                Style="{StaticResource TablePanelStyle}">
+            <FlowDocumentScrollViewer x:Name="ReportDocumentViewer"
+                                      VerticalScrollBarVisibility="Auto"
+                                      IsToolBarVisible="False"/>
+        </Border>
+
+        <TextBlock x:Name="ViewerStatusTextBlock"
+                   Grid.Row="2"
+                   Margin="34,12,34,22"
+                   FontSize="12"
+                   Foreground="{StaticResource MutedTextBrush}"/>
+    </Grid>
+</Window>

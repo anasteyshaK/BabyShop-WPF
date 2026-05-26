@@ -1,0 +1,159 @@
+<Window x:Class="BabyShop.BackupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Backup"
+        Width="1180"
+        Height="820"
+        MinWidth="1020"
+        MinHeight="720"
+        WindowStartupLocation="CenterOwner"
+        Loaded="Window_Loaded">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource HeroCardStyle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock x:Name="WindowTitleTextBlock"
+                               FontSize="28"
+                               FontWeight="Black"
+                               Text="Backup"/>
+                    <TextBlock x:Name="WindowSubtitleTextBlock"
+                               Margin="0,8,0,0"
+                               FontSize="14"
+                               Foreground="{StaticResource MutedTextBrush}"
+                               Text="Create backups, restore from SQL files, and review history."/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Top">
+                    <Button x:Name="CreateBackupButton"
+                            MinWidth="170"
+                            Margin="0,0,10,0"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Click="CreateBackupButton_Click"
+                            Content="Create backup"/>
+                    <Button x:Name="RestoreBackupButton"
+                            MinWidth="190"
+                            Margin="0,0,10,0"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Click="RestoreBackupButton_Click"
+                            Content="Restore from file"/>
+                    <Button x:Name="RefreshButton"
+                            MinWidth="120"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Click="RefreshButton_Click"
+                            Content="Refresh"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Margin="0,16,0,0"
+                Style="{StaticResource TablePanelStyle}">
+            <DockPanel>
+                <TextBlock x:Name="LastBackupTitleTextBlock"
+                           DockPanel.Dock="Top"
+                           Margin="0,0,0,14"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Text="Last backup"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock x:Name="LastBackupUserLabelTextBlock" FontWeight="SemiBold" Text="User"/>
+                    <TextBlock x:Name="LastBackupUserValueTextBlock" Grid.Column="1" Margin="12,0,20,0" Text="-"/>
+                    <TextBlock x:Name="LastBackupFileLabelTextBlock" Grid.Column="2" FontWeight="SemiBold" Text="File"/>
+                    <TextBlock x:Name="LastBackupFileValueTextBlock" Grid.Column="3" Margin="12,0,0,0" Text="-"/>
+
+                    <TextBlock x:Name="LastBackupPathLabelTextBlock" Grid.Row="1" Margin="0,12,0,0" FontWeight="SemiBold" Text="Path"/>
+                    <TextBlock x:Name="LastBackupPathValueTextBlock" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="12,12,0,0" TextWrapping="Wrap" Text="-"/>
+
+                    <TextBlock x:Name="LastBackupSizeLabelTextBlock" Grid.Row="2" Margin="0,12,0,0" FontWeight="SemiBold" Text="Size"/>
+                    <TextBlock x:Name="LastBackupSizeValueTextBlock" Grid.Row="2" Grid.Column="1" Margin="12,12,20,0" Text="-"/>
+                    <TextBlock x:Name="LastBackupStatusLabelTextBlock" Grid.Row="2" Grid.Column="2" Margin="0,12,0,0" FontWeight="SemiBold" Text="Status"/>
+                    <StackPanel Grid.Row="2" Grid.Column="3" Margin="12,12,0,0">
+                        <TextBlock x:Name="LastBackupStatusValueTextBlock" Text="-"/>
+                        <TextBlock x:Name="LastBackupMessageValueTextBlock"
+                                   Margin="0,4,0,0"
+                                   FontSize="12"
+                                   Foreground="{StaticResource MutedTextBrush}"
+                                   TextWrapping="Wrap"
+                                   Text="-"/>
+                        <TextBlock x:Name="LastBackupDateValueTextBlock"
+                                   Margin="0,4,0,0"
+                                   FontSize="12"
+                                   Foreground="{StaticResource MutedTextBrush}"
+                                   Text="-"/>
+                    </StackPanel>
+                </Grid>
+            </DockPanel>
+        </Border>
+
+        <Border Grid.Row="2"
+                Margin="0,16,0,0"
+                Style="{StaticResource TablePanelStyle}">
+            <DockPanel>
+                <TextBlock x:Name="HistoryTitleTextBlock"
+                           DockPanel.Dock="Top"
+                           Margin="0,0,0,14"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Text="Backup history"/>
+
+                <TextBlock x:Name="HistoryAccessDeniedTextBlock"
+                           Visibility="Collapsed"
+                           FontStyle="Italic"
+                           Foreground="{StaticResource MutedTextBrush}"
+                           Text="You do not have permission to view backup history."/>
+
+                <DataGrid x:Name="HistoryDataGrid"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn x:Name="OperationColumn" Binding="{Binding OperationType}" Width="110"/>
+                        <DataGridTextColumn x:Name="UserColumn" Binding="{Binding Username}" Width="120"/>
+                        <DataGridTextColumn x:Name="FileColumn" Binding="{Binding FileName}" Width="170"/>
+                        <DataGridTextColumn x:Name="PathColumn" Binding="{Binding FilePath}" Width="2*"/>
+                        <DataGridTextColumn x:Name="SizeColumn" Binding="{Binding FileSizeDisplay}" Width="95"/>
+                        <DataGridTextColumn x:Name="DatabaseColumn" Binding="{Binding DatabaseName}" Width="120"/>
+                        <DataGridTextColumn x:Name="StatusColumn" Binding="{Binding Status}" Width="95"/>
+                        <DataGridTextColumn x:Name="MessageColumn" Binding="{Binding Message}" Width="2*"/>
+                        <DataGridTextColumn x:Name="DateColumn" Binding="{Binding CreatedAt, StringFormat={}{0:g}}" Width="140"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </Border>
+
+        <TextBlock x:Name="StatusTextBlock"
+                   Grid.Row="3"
+                   Margin="4,14,4,0"
+                   FontSize="12"
+                   Foreground="{StaticResource MutedTextBrush}"
+                   Text=""/>
+    </Grid>
+</Window>
